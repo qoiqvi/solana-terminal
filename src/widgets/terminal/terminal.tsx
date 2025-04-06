@@ -6,6 +6,7 @@ import { getQuote, getTokenByMintAddress, swapTokens } from '@/shared/api';
 import { fromAtomicAmount, toAtomicAmount, truncateAddress } from '@/shared/utils';
 import { useAuth } from '@/shared/hooks';
 import { JupiterQuoteResponse } from '@/shared/types/jupiter';
+import { useSolanaWallets } from '@privy-io/react-auth';
 
 interface TerminalProps {
   firstToken: string;
@@ -20,6 +21,7 @@ export default function Terminal({ firstToken, secondToken }: TerminalProps) {
   const [secondTokenAmount, setSecondTokenAmount] = useState('');
   const [quoteResponse, setQuoteResponse] = useState<JupiterQuoteResponse | null>(null);
   const { user } = useAuth();
+  const { wallets } = useSolanaWallets();
 
   useEffect(() => {
     async function fetchTokens() {
@@ -69,7 +71,7 @@ export default function Terminal({ firstToken, secondToken }: TerminalProps) {
     if (!quoteResponse || !user?.wallet?.address) {
       return;
     }
-    swapTokens(quoteResponse, user.wallet);
+    swapTokens(quoteResponse, wallets[0]);
   }
 
   return (
